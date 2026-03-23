@@ -178,6 +178,12 @@ def static_files(filename):
     return send_from_directory("public", filename)
 
 
+@app.get("/health")
+def health():
+    key = os.environ.get("ANTHROPIC_API_KEY", "")
+    return {"key_set": bool(key), "key_preview": key[:12] + "..." if key else "MISSING"}
+
+
 @app.post("/api/chat")
 def chat():
     data = request.get_json()
