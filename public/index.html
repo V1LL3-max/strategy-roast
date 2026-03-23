@@ -93,6 +93,51 @@
       max-width: 380px;
     }
 
+    .landing-footer {
+      position: absolute;
+      bottom: 24px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 11px;
+      color: #3a3a3a;
+      padding: 0 24px;
+      line-height: 1.7;
+    }
+
+    .landing-footer a {
+      color: #4a4a4a;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .landing-footer a:hover {
+      color: var(--muted);
+    }
+
+    .footer-sep {
+      margin: 0 8px;
+      opacity: 0.4;
+    }
+
+    .chat-footer {
+      font-size: 11px;
+      color: #3a3a3a;
+      text-align: center;
+      padding: 0 24px 16px;
+      line-height: 1.7;
+      flex-shrink: 0;
+    }
+
+    .chat-footer a {
+      color: #4a4a4a;
+      text-decoration: none;
+    }
+
+    .chat-footer a:hover {
+      color: var(--muted);
+    }
+
     /* ─── APP SHELL ───────────────────────────────────────── */
     #app {
       display: none;
@@ -318,6 +363,11 @@
   </p>
   <button class="start-btn" onclick="startRoast()">Take a seat</button>
   <p class="landing-disclaimer">Bring honesty. Leave the deck behind.</p>
+  <div class="landing-footer">
+    Powered by <a href="https://anthropic.com" target="_blank">Claude</a> · Your conversation is not stored or used for training
+    <span class="footer-sep">·</span>
+    By <a href="https://www.villetikka.com" target="_blank">Ville Tikka</a>
+  </div>
 </div>
 
 <!-- ── CHAT APP ─────────────────────────────────── -->
@@ -346,6 +396,11 @@
       </button>
     </div>
     <p class="input-hint">Press Enter to send · Shift+Enter for new line</p>
+  </div>
+  <div class="chat-footer">
+    Powered by <a href="https://anthropic.com" target="_blank">Claude</a> · Conversations are not stored or used for training
+    <span class="footer-sep" style="margin:0 8px;opacity:0.4">·</span>
+    By <a href="https://www.villetikka.com" target="_blank">Ville Tikka</a>
   </div>
 </div>
 
