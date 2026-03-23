@@ -188,18 +188,25 @@ def chat():
         return {"error": "Messages required"}, 400
 
     def generate():
-        with client.messages.stream(
-            model="claude-opus-4-6",
-            max_tokens=4096,
-            system=SYSTEM_PROMPT,
-            messages=messages,
-            thinking={"type": "adaptive"},
-        ) as stream:
-            for text in stream.text_stream:
-                yield f"data: {json.dumps({'text': text})}\n\n"
-        yield f"data: {json.dumps({'done': True})}\n\n"
+        try:
+            with client.messages.stream(
+                model="claude-opus-4-6",
+                max_tokens=4096,
+                system=SYSTEM_PROMPT,
+                messages=messages,
+            ) as stream:
+                for text in stream.text_stream:
+                    yield f"data: {json.dumps({'text': text})}\n\n"
+            yield f"data: {json.dumps({'done': True})}\n\n"
+        except Exception as e:
+            print(f"Stream error: {e}")
+            yield f"data: {json.dumps({'error': str(e)})}\n\n"
 
-    return Response(generate(), mimetype="text/event-stream")
+    headers = {
+        "X-Accel-Buffering": "no",
+        "Cache-Control": "no-cache",
+    }
+    return Response(generate(), mimetype="text/event-stream", headers=headers)
 
 
 if __name__ == "__main__":
