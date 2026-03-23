@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Strategy Roast</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red: #E8201A;
+      --bg: #0f0f0f;
+      --surface: #161616;
+      --border: #2a2a2a;
+      --text: #e8e8e8;
+      --muted: #6b6b6b;
+      --user-bg: #1e1e1e;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* ─── LANDING ─────────────────────────────────────────── */
+    #landing {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 40px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #landing::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% 30%, rgba(232,32,26,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .landing-logo {
+      width: min(340px, 80vw);
+      margin-bottom: 40px;
+      display: block;
+    }
+
+    .landing-tagline {
+      font-size: clamp(14px, 2vw, 16px);
+      color: var(--muted);
+      max-width: 420px;
+      margin-bottom: 48px;
+      font-weight: 300;
+      letter-spacing: 0.01em;
+    }
+
+    .start-btn {
+      background: var(--red);
+      color: #fff;
+      border: none;
+      padding: 16px 48px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      text-transform: uppercase;
+    }
+
+    .start-btn:hover {
+      background: #ff2a24;
+      transform: translateY(-1px);
+    }
+
+    .start-btn:active {
+      transform: translateY(0);
+    }
+
+    .landing-disclaimer {
+      margin-top: 32px;
+      font-size: 12px;
+      color: var(--muted);
+      max-width: 380px;
+    }
+
+    /* ─── APP SHELL ───────────────────────────────────────── */
+    #app {
+      display: none;
+      flex-direction: column;
+      height: 100vh;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    /* ─── HEADER ──────────────────────────────────────────── */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .header-logo {
+      height: 36px;
+    }
+
+    .header-reset {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      padding: 6px 14px;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .header-reset:hover {
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    /* ─── MESSAGES ────────────────────────────────────────── */
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 32px 24px;
+      scroll-behavior: smooth;
+    }
+
+    .messages::-webkit-scrollbar { width: 4px; }
+    .messages::-webkit-scrollbar-track { background: transparent; }
+    .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .message {
+      margin-bottom: 28px;
+      max-width: 100%;
+      animation: fadeUp 0.25s ease;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .message.assistant .msg-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 8px;
+    }
+
+    .message.user {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .message.user .msg-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .msg-bubble {
+      padding: 14px 18px;
+      line-height: 1.7;
+    }
+
+    .message.assistant .msg-bubble {
+      background: transparent;
+      border-left: 2px solid var(--red);
+      padding-left: 20px;
+      color: var(--text);
+    }
+
+    .message.user .msg-bubble {
+      background: var(--user-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      max-width: 85%;
+      text-align: left;
+    }
+
+    /* Markdown-ish rendering */
+    .msg-bubble h3 {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin: 20px 0 8px;
+    }
+
+    .msg-bubble p { margin-bottom: 12px; }
+    .msg-bubble p:last-child { margin-bottom: 0; }
+
+    .msg-bubble strong {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* ─── TYPING INDICATOR ────────────────────────────────── */
+    .typing {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 14px 20px;
+      border-left: 2px solid var(--border);
+      margin-bottom: 28px;
+    }
+
+    .typing span {
+      width: 6px;
+      height: 6px;
+      background: var(--muted);
+      border-radius: 50%;
+      animation: blink 1.2s infinite;
+    }
+
+    .typing span:nth-child(2) { animation-delay: 0.2s; }
+    .typing span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes blink {
+      0%, 80%, 100% { opacity: 0.3; transform: scale(0.9); }
+      40% { opacity: 1; transform: scale(1.1); }
+    }
+
+    /* ─── INPUT AREA ──────────────────────────────────────── */
+    .input-area {
+      padding: 16px 24px 24px;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
+    #user-input {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      padding: 12px 16px;
+      resize: none;
+      min-height: 48px;
+      max-height: 160px;
+      line-height: 1.5;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    #user-input:focus {
+      border-color: #444;
+    }
+
+    #user-input::placeholder {
+      color: var(--muted);
+    }
+
+    #send-btn {
+      background: var(--red);
+      color: #fff;
+      border: none;
+      width: 48px;
+      height: 48px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+      flex-shrink: 0;
+    }
+
+    #send-btn:hover { background: #ff2a24; }
+    #send-btn:disabled { background: #333; cursor: not-allowed; }
+
+    #send-btn svg { width: 20px; height: 20px; }
+
+    .input-hint {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── LANDING PAGE ─────────────────────────────── -->
+<div id="landing">
+  <img src="logo.png" alt="Strategy Roast" class="landing-logo">
+  <p class="landing-tagline">
+    Eight questions. Four dimensions. One honest read of where your organization actually is — and what it actually needs.
+  </p>
+  <button class="start-btn" onclick="startRoast()">Take a seat</button>
+  <p class="landing-disclaimer">Bring honesty. Leave the deck behind.</p>
+</div>
+
+<!-- ── CHAT APP ─────────────────────────────────── -->
+<div id="app">
+  <div class="header">
+    <img src="logo.png" alt="Strategy Roast" class="header-logo">
+    <button class="header-reset" onclick="resetRoast()">Start over</button>
+  </div>
+
+  <div class="messages" id="messages"></div>
+
+  <div class="input-area">
+    <div class="input-row">
+      <textarea
+        id="user-input"
+        placeholder="Your answer..."
+        rows="1"
+        onkeydown="handleKey(event)"
+        oninput="autoResize(this)"
+      ></textarea>
+      <button id="send-btn" onclick="sendMessage()" title="Send">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+    <p class="input-hint">Press Enter to send · Shift+Enter for new line</p>
+  </div>
+</div>
+
+<script>
+  let conversationHistory = [];
+  let isStreaming = false;
+
+  function startRoast() {
+    document.getElementById('landing').style.display = 'none';
+    const app = document.getElementById('app');
+    app.style.display = 'flex';
+    sendInitialMessage();
+  }
+
+  function resetRoast() {
+    conversationHistory = [];
+    document.getElementById('messages').innerHTML = '';
+    document.getElementById('landing').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+  }
+
+  async function sendInitialMessage() {
+    // Trigger the opening by sending a silent "begin" user message
+    conversationHistory = [{ role: 'user', content: 'Begin the roast.' }];
+    await streamAssistantReply();
+    // Remove the trigger from visible history but keep for context
+  }
+
+  function addMessage(role, content) {
+    const messages = document.getElementById('messages');
+    const div = document.createElement('div');
+    div.className = `message ${role}`;
+
+    const label = document.createElement('div');
+    label.className = 'msg-label';
+    label.textContent = role === 'assistant' ? 'Strategy Roast' : 'You';
+
+    const bubble = document.createElement('div');
+    bubble.className = 'msg-bubble';
+    bubble.innerHTML = formatContent(content);
+
+    div.appendChild(label);
+    div.appendChild(bubble);
+    messages.appendChild(div);
+    scrollToBottom();
+    return bubble;
+  }
+
+  function addStreamingMessage() {
+    const messages = document.getElementById('messages');
+    const div = document.createElement('div');
+    div.className = 'message assistant';
+    div.id = 'streaming-msg';
+
+    const label = document.createElement('div');
+    label.className = 'msg-label';
+    label.textContent = 'Strategy Roast';
+
+    const bubble = document.createElement('div');
+    bubble.className = 'msg-bubble';
+    bubble.id = 'streaming-bubble';
+
+    div.appendChild(label);
+    div.appendChild(bubble);
+    messages.appendChild(div);
+    return bubble;
+  }
+
+  function addTypingIndicator() {
+    const messages = document.getElementById('messages');
+    const div = document.createElement('div');
+    div.id = 'typing';
+    div.className = 'typing';
+    div.innerHTML = '<span></span><span></span><span></span>';
+    messages.appendChild(div);
+    scrollToBottom();
+  }
+
+  function removeTypingIndicator() {
+    const el = document.getElementById('typing');
+    if (el) el.remove();
+  }
+
+  function formatContent(text) {
+    // Convert markdown-ish headings and paragraphs
+    return text
+      .replace(/### (.+)/g, '<h3>$1</h3>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/\n/g, '<br>')
+      .replace(/^/, '<p>')
+      .replace(/$/, '</p>')
+      // Clean up empty paragraphs
+      .replace(/<p><\/p>/g, '')
+      .replace(/<p><br>/g, '<p>')
+      .replace(/<br><\/p>/g, '</p>');
+  }
+
+  function scrollToBottom() {
+    const messages = document.getElementById('messages');
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  async function streamAssistantReply() {
+    isStreaming = true;
+    setSendDisabled(true);
+    addTypingIndicator();
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: conversationHistory }),
+      });
+
+      removeTypingIndicator();
+
+      if (!response.ok) {
+        addMessage('assistant', 'Something went wrong. Please try again.');
+        isStreaming = false;
+        setSendDisabled(false);
+        return;
+      }
+
+      const bubble = addStreamingMessage();
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let fullText = '';
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop();
+
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue;
+          try {
+            const data = JSON.parse(line.slice(6));
+            if (data.text) {
+              fullText += data.text;
+              bubble.innerHTML = formatContent(fullText);
+              scrollToBottom();
+            }
+            if (data.done) {
+              conversationHistory.push({ role: 'assistant', content: fullText });
+              document.getElementById('streaming-msg').removeAttribute('id');
+              bubble.removeAttribute('id');
+            }
+            if (data.error) {
+              bubble.innerHTML = formatContent(data.error);
+            }
+          } catch {}
+        }
+      }
+    } catch (err) {
+      removeTypingIndicator();
+      addMessage('assistant', 'Connection error. Please refresh and try again.');
+    }
+
+    isStreaming = false;
+    setSendDisabled(false);
+    document.getElementById('user-input')?.focus();
+  }
+
+  async function sendMessage() {
+    if (isStreaming) return;
+
+    const input = document.getElementById('user-input');
+    const text = input.value.trim();
+    if (!text) return;
+
+    input.value = '';
+    autoResize(input);
+
+    conversationHistory.push({ role: 'user', content: text });
+    addMessage('user', text);
+    await streamAssistantReply();
+  }
+
+  function handleKey(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  }
+
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 160) + 'px';
+  }
+
+  function setSendDisabled(disabled) {
+    const btn = document.getElementById('send-btn');
+    if (btn) btn.disabled = disabled;
+  }
+</script>
+</body>
+</html>
