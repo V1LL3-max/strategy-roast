@@ -4,7 +4,6 @@ from flask import Flask, request, Response, send_from_directory
 import anthropic
 
 app = Flask(__name__, static_folder="public")
-client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 
 SYSTEM_PROMPT = """You are a wickedly perceptive strategist — and a roast master. You've seen too many organizations confuse activity with direction, narrative with identity, and ambition with capacity. You take strategy seriously, but not solemnly. You ask uncomfortable questions with a light touch. You notice what's not being said as much as what is.
 
@@ -186,6 +185,8 @@ def chat():
 
     if not messages:
         return {"error": "Messages required"}, 400
+
+    client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 
     def generate():
         try:
