@@ -367,6 +367,8 @@
     Powered by <a href="https://anthropic.com" target="_blank">Claude</a> · Your conversation is not stored or used for training
     <span class="footer-sep">·</span>
     By <a href="https://www.villetikka.com" target="_blank">Ville Tikka</a>
+    <span class="footer-sep">·</span>
+    <a href="https://gist.github.com/V1LL3-max/4e7ffaaee81c19bb4f5739d03fed35a5" target="_blank">Download skill file</a>
   </div>
 </div>
 
@@ -401,6 +403,8 @@
     Powered by <a href="https://anthropic.com" target="_blank">Claude</a> · Conversations are not stored or used for training
     <span class="footer-sep" style="margin:0 8px;opacity:0.4">·</span>
     By <a href="https://www.villetikka.com" target="_blank">Ville Tikka</a>
+    <span class="footer-sep" style="margin:0 8px;opacity:0.4">·</span>
+    <a href="https://gist.github.com/V1LL3-max/4e7ffaaee81c19bb4f5739d03fed35a5" target="_blank">Download skill file</a>
   </div>
 </div>
 
@@ -554,7 +558,8 @@
               bubble.removeAttribute('id');
             }
             if (data.error) {
-              bubble.innerHTML = formatContent(data.error);
+              bubble.innerHTML = `<em style="color:var(--muted)">${data.error} You can also <a href="https://gist.github.com/V1LL3-max/4e7ffaaee81c19bb4f5739d03fed35a5" target="_blank" style="color:var(--muted);text-decoration:underline">download the skill file</a> and run the roast directly in Claude.</em>`;
+              conversationHistory.pop();
             }
           } catch {}
         }

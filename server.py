@@ -1,5 +1,6 @@
 import os
 import json
+import time
 from flask import Flask, request, Response, send_from_directory
 import anthropic
 
@@ -223,19 +224,30 @@ def chat():
     client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 
     def generate():
-        try:
-            with client.messages.stream(
-                model="claude-opus-4-6",
-                max_tokens=4096,
-                system=SYSTEM_PROMPT,
-                messages=messages,
-            ) as stream:
-                for text in stream.text_stream:
-                    yield f"data: {json.dumps({'text': text})}\n\n"
-            yield f"data: {json.dumps({'done': True})}\n\n"
-        except Exception as e:
-            print(f"Stream error: {e}")
-            yield f"data: {json.dumps({'error': str(e)})}\n\n"
+        for attempt in range(3):
+            try:
+                with client.messages.stream(
+                    model="claude-opus-4-6",
+                    max_tokens=4096,
+                    system=SYSTEM_PROMPT,
+                    messages=messages,
+                ) as stream:
+                    for text in stream.text_stream:
+                        yield f"data: {json.dumps({'text': text})}\n\n"
+                yield f"data: {json.dumps({'done': True})}\n\n"
+                return
+            except anthropic.APIStatusError as e:
+                if e.status_code == 529 and attempt < 2:
+                    time.sleep(3 * (attempt + 1))
+                    continue
+                print(f"Stream error: {e}")
+                msg = "Claude is overloaded right now. Wait a moment and try again." if e.status_code == 529 else f"API error: {e.message}"
+                yield f"data: {json.dumps({'error': msg})}\n\n"
+                return
+            except Exception as e:
+                print(f"Stream error: {e}")
+                yield f"data: {json.dumps({'error': 'Something went wrong. Please try again.'})}\n\n"
+                return
 
     headers = {
         "X-Accel-Buffering": "no",
