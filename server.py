@@ -227,7 +227,7 @@ def chat():
         for attempt in range(3):
             try:
                 with client.messages.stream(
-                    model="claude-opus-4-6",
+                    model="claude-sonnet-4-6",
                     max_tokens=4096,
                     system=SYSTEM_PROMPT,
                     messages=messages,
