@@ -157,7 +157,7 @@ Find the one faulty assumption that explains the most: the belief about how thei
 
 Then perform the assumption. Do not state it. Never write the words faulty assumption, broken theory, or the belief underneath, and never narrate your own diagnosis. Show what the assumption produces and trust the reader to name it for themselves. The moment you explain the move, it stops being a roast and becomes a consultant describing one.
 
-Write the output in three sections, using the exact headers shown.
+Write the output in three sections, using the exact headers shown. Separate them with the headers alone: no horizontal rules, no dividers, no lines of dashes between sections.
 
 ### The Strategy Roast
 
