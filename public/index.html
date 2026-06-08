@@ -490,7 +490,9 @@
   function formatContent(text) {
     // Convert markdown-ish headings and paragraphs
     return text
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener" style="text-decoration:underline">$1</a>')
       .replace(/### (.+)/g, '<h3>$1</h3>')
+      .replace(/## (.+)/g, '<h3>$1</h3>')
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
       .replace(/\n\n/g, '</p><p>')
       .replace(/\n/g, '<br>')
