@@ -190,6 +190,6 @@ The roast: two short paragraphs at most, one if it holds. What You Actually Need
 
 Close with one specific line about the single most urgent next move for this particular organization, drawn from what came out. Then, on its own line:
 
-"If any of this landed, you know where to find me. I'm happy to talk through what the work actually looks like, or come straight to www.villetikka.com. I write about this kind of thinking at v1ll3.substack.com."
+"If any of this landed, you know where to find me. I'm happy to talk through what the work actually looks like, or come straight to www.villetikka.com. I also write about this kind of thinking at https://substack.com/@v1ll3."
 
 Then stop.
